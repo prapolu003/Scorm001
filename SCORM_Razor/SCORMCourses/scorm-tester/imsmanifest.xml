@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<manifest identifier="id_scormtester" version="1.2" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+	<metadata>
+		<schema>ADL SCORM</schema>
+		<schemaversion>1.2</schemaversion>
+		<lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1">
+			<general>
+				<title>
+					<langstring>SCORM Tester</langstring>
+				</title>
+				<catalogentry>
+					<catalog>Martin Holden</catalog>
+					<entry>
+						<langstring>scormtester</langstring>
+					</entry>
+				</catalogentry>
+				<language>en-us</language>
+				<description>
+					<langstring>This course is designed to help check SCORM comms with an LMS</langstring>
+				</description>
+				<aggregationlevel>
+					<source>
+						<langstring xml:lang="x-none">LOMv1.0</langstring>
+					</source>
+					<value>
+						<langstring xml:lang="x-none">3</langstring>
+					</value>
+				</aggregationlevel>
+			</general>
+			<metametadata>
+				<contribute>
+					<role>
+						<source>
+							<langstring xml:lang="x-none">LOMv1.0</langstring>
+						</source>
+						<value>
+							<langstring xml:lang="x-none">Creator</langstring>
+						</value>
+					</role>
+					<centity>
+						<vcard>
+Begin:vcard
+Fn:Martin Holden
+End:vcard
+						</vcard>
+					</centity>
+				</contribute>
+				<metadatascheme>ADL SCORM 1.2</metadatascheme>
+				<language>en-us</language>
+			</metametadata>
+			<technical>
+				<format>text/html</format>
+				<location type="URI">scorm12.htm</location>
+				<duration>
+					<datetime>00:05</datetime>
+				</duration>
+			</technical>
+			<educational>
+				<typicallearningtime>
+					<datetime>00:05</datetime>
+				</typicallearningtime>
+				<intendedenduserrole>
+					<source>
+						<langstring xml:lang="x-none">LOMv1.0</langstring>
+					</source>
+					<value>
+						<langstring xml:lang="x-none">Learner</langstring>
+					</value>
+				</intendedenduserrole>
+			</educational>
+			<rights>
+				<cost>
+					<source>
+						<langstring xml:lang="x-none">LOMv1.0</langstring>
+					</source>
+					<value>
+						<langstring xml:lang="x-none">no</langstring>
+					</value>
+				</cost>
+				<copyrightandotherrestrictions>
+					<source>
+						<langstring xml:lang="x-none">LOMv1.0</langstring>
+					</source>
+					<value>
+						<langstring xml:lang="x-none">yes</langstring>
+					</value>
+				</copyrightandotherrestrictions>
+				<description>
+					<langstring>Copyright Martin Holden 2020</langstring>
+				</description>
+			</rights>
+			<classification>
+				<purpose>
+					<source>
+						<langstring xml:lang="x-none">LOMv1.0</langstring>
+					</source>
+					<value>
+						<langstring xml:lang="x-none">Educational Objective</langstring>
+					</value>
+				</purpose>
+				<description>
+					<langstring>SCORM Tester</langstring>
+				</description>
+			</classification>
+			<classification>
+				<purpose>
+					<source>
+						<langstring xml:lang="x-none">LOMv1.0</langstring>
+					</source>
+					<value>
+						<langstring xml:lang="x-none">Educational Objective</langstring>
+					</value>
+				</purpose>
+				<description>
+					<langstring>identify if LMS stores and returns data</langstring>
+				</description>
+			</classification>
+		</lom>
+	</metadata>
+	<organizations default="default">
+		<organization identifier="default">
+			<title>SCORM Tester</title>
+			<item identifier="courseitem" identifierref="res_scormtester">
+				<title>SCORM Tester</title>
+				<adlcp:datafromlms>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</adlcp:datafromlms>
+				<adlcp:masteryscore>25</adlcp:masteryscore>
+			</item>
+		</organization>
+	</organizations>
+	<resources>
+		<resource type="webcontent" adlcp:scormtype="sco" href="scorm12.htm" identifier="res_scormtester">
+			<file href="scorm12.htm" />
+			<file href="log4javascript.js" />
+			<file href="diff.js" />
+			<file href="json3.js" />
+		</resource>
+	</resources>
+</manifest>

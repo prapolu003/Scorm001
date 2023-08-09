@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="log4javascript.js"></script>
+    <script src="diff.js"></script>
+    <script src="json3.js"></script>
+    <script src="jquery.js"></script>
+    <script type="text/javascript">
+
+
+
+
+    </script>
+    <title>SCORM Tester</title>
+</head>
+
+<body>
+    <div id="instructions" style="width: 800px;">
+        <div id="step1" style="display: hidden;">
+            <p>As this is the first launch of the content the <strong>Step1</strong> button is enabled, when clicked
+                this will simulate an incomplete session. It will send to the LMS:</p>
+            <ul>
+                <li><code>cmi.core.lesson_status</code> - value of incomplete</li>
+                <li><code>cmi.core.lesson_location</code> - value of step1</li>
+                <li><code>cmi.core.session_time</code> - value of 00:00:01</li>
+                <li><code>cmi.suspend_data</code> - value that is maximum length allowed of 4096 characters</li>
+            </ul>
+            <p>It will then send LMSCommit() and LMSFinish()</p>
+        </div>
+        <div id="step2" style="display: hidden;">
+            <p>As this is the second launch of the content the <strong>Step2</strong> button is enabled, when clicked
+                this will simulate a completed session. It will send to the LMS:</p>
+            <ul>
+                <li><code>cmi.core.lesson_status</code> - value of completed</li>
+                <li><code>cmi.core.lesson_location</code> - value of step1</li>
+                <li><code>cmi.core.score.raw</code> - value of 100</li>
+                <li><code>cmi.core.session_time</code> - value of 00:00:01</li>
+                <li><code>cmi.suspend_data</code> - value that is maximum length allowed of 4096 characters</li>
+            </ul>
+            <p>It will then send LMSCommit() and LMSFinish()</p>
+        </div>
+        <div id="step3" style="display: hidden;">
+            <p>As this is a relaunch of the completed content the <strong>Step3</strong> button is enabled, when clicked
+                this will just call LMSFinish()</p>
+        </div>
+        <div id="completed" style="display: hidden;">
+            <p>LMSFinish() has now been called and the LMS session completed, please close this course window.</p>
+        </div>
+    </div>
+    <div id="controls" style="width: 800px; height: 50px;">
+        <input id="btnStep1" type="submit" value="Step1" disabled="disabled" />
+        <input id="btnStep2" type="submit" value="Step2" disabled="disabled" />
+        <input id="btnStep3" type="submit" value="Step3" disabled="disabled" />
+    </div>
+
+
+    <div id="myLogger" style="width: 800px; height: 400px;"></div>
+    <script>
+        var Logger = null;
+        var myAPI = null;
+        var Initialized = false;
+        var Finished = false;
+
+        var expectedcmi_step1 = {
+            'launch_data': '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',
+            'suspend_data': '',
+            'student_data': {
+                'mastery_score': 25
+            },
+            'core': {
+                'total_time': '0000:00:00.00',
+                'score': {
+                    'raw': null
+                }
+            }
+        };
+
+        var expectedcmi_step2 = {
+            'launch_data': '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',
+            'suspend_data': '<root><station early="air">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</station></root>',
+            'student_data': {
+                'mastery_score': 25
+            },
+            'core': {
+                'total_time': '0000:00:01.00',
+                'lesson_location': 'step1',
+                'score': {
+                    'raw': 100
+                }
+            }
+        };
+
+        var receivedcmi = {
+            'launch_data': null,
+            'core': {
+                'student_id': null,
+                'student_name': null,
+                'lesson_location': null,
+                'lesson_status': null,
+                'total_time': null,
+                'score': {
+                    'raw': null
+                }
+            },
+            'suspend_data': null,
+            'student_data': {
+                'mastery_score': null
+            }
+        };
+
+        // SCORM functions
+        //////////////////////////////////////////
+        //Begin ADL-provided API discovery algorithm
+        ///////////////////////////////////////////
+        var findAPITries = 0;
+
+        function findAPI(win) {
+            // Check to see if the window (win) contains the API
+            // if the window (win) does not contain the API and
+            // the window (win) has a parent window and the parent window
+            // is not the same as the window (win)
+            while ((win.API == null) &&
+                (win.parent != null) &&
+                (win.parent != win)) {
+                // increment the number of findAPITries
+                findAPITries++;
+
+                // Note: 7 is an arbitrary number, but should be more than sufficient
+                if (findAPITries > 7) {
+                    alert("Error finding API -- too deeply nested.");
+                    return null;
+                }
+
+                // set the variable that represents the window being
+                // being searched to be the parent of the current window
+                // then search for the API again
+                win = win.parent;
+            }
+            return win.API;
+        }
+
+        function getAPI() {
+            // start by looking for the API in the current window
+            var theAPI = findAPI(window);
+
+            // if the API is null (could not be found in the current window)
+            // and the current window has an opener window
+            if ((theAPI == null) &&
+                (window.opener != null) &&
+                (typeof (window.opener) != "undefined")) {
+                // try to find the API in the current window’s opener
+                theAPI = findAPI(window.opener);
+            }
+            // if the API has not been found
+            if (theAPI == null) {
+                // Alert the user that the API Adapter could not be found
+                alert("Unable to find an API adapter");
+            }
+            return theAPI;
+        }
+
+        function LMSInitialize() {
+            Logger.info("Calling LMSInitialize()");
+            if (myAPI.LMSInitialize("") == "false") {
+                var error = myAPI.LMSGetLastError(); //CMIErrorCode – Returns the error code that resulted from the last API call.
+                var errorString = myAPI.LMSGetErrorString(error); //string – Returns a short string describing the specified error code.
+
+                if (error.toString() !== '0') {
+                    Logger.error('Request generated SCORM ErrorCode: ' + error + ' ErrorString: ' + errorString);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function LMSFinish() {
+            Logger.info("Calling LMSFinish()");
+            if (myAPI.LMSFinish("") == "false") {
+                var error = myAPI.LMSGetLastError(); //CMIErrorCode – Returns the error code that resulted from the last API call.
+                var errorString = myAPI.LMSGetErrorString(error); //string – Returns a short string describing the specified error code.
+
+                if (error.toString() !== '0') {
+                    Logger.error('Request generated SCORM ErrorCode: ' + error + ' ErrorString: ' + errorString);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function LMSGetValue(key, mustHaveValue, compareValue) {
+            Logger.info("Calling LMSGetValue('" + key + "')");
+            var response = myAPI.LMSGetValue(key);
+
+            var error = myAPI.LMSGetLastError(); //CMIErrorCode – Returns the error code that resulted from the last API call.
+            var errorString = myAPI.LMSGetErrorString(error); //string – Returns a short string describing the specified error code.
+
+            if (error.toString() !== '0') {
+                Logger.error('Request generated SCORM ErrorCode: ' + error + ' ErrorString: ' + errorString);
+            }
+
+            if (mustHaveValue) {
+                if (IsNullOrEmptyOrWhiteSpace(response)) {
+                    Logger.error('Data from LMS for ' + key + ' is Null, Empty or WhiteSpace');
+                    Logger.error('Response: ' + response);
+                    return null;
+                }
+            }
+
+            if (compareValue !== null) {
+                var diffResult = createDiff(response, compareValue);
+                if (diffResult.length > 1) {
+                    Logger.error('Data from LMS for ' + key + ' does not match expected value: ' + compareValue);
+                    Logger.error('Diff Results: ' + JSON.stringify(diffResult));
+                    return null;
+                }
+            }
+            Logger.info("Response LMSGetValue('" + key + "'): " + response);
+            return response;
+        }
+
+        function LMSSetValue(key, value) {
+            Logger.info("Calling LMSSetValue('" + key + "', '" + value + "')");
+            var response = myAPI.LMSSetValue(key, value);
+
+            var error = myAPI.LMSGetLastError(); //CMIErrorCode – Returns the error code that resulted from the last API call.
+            var errorString = myAPI.LMSGetErrorString(error); //string – Returns a short string describing the specified error code.
+
+            if (error.toString() !== '0') {
+                Logger.error('Request generated SCORM ErrorCode: ' + error + ' ErrorString: ' + errorString);
+            }
+
+            return response;
+        }
+
+        function LMSCommit() {
+            Logger.info("Calling LMSCommit()");
+            var response = myAPI.LMSCommit("");
+
+            var error = myAPI.LMSGetLastError(); //CMIErrorCode – Returns the error code that resulted from the last API call.
+            var errorString = myAPI.LMSGetErrorString(error); //string – Returns a short string describing the specified error code.
+
+            if (error.toString() !== '0') {
+                Logger.error('Request generated SCORM ErrorCode: ' + error + ' ErrorString: ' + errorString);
+            }
+
+            return response;
+        }
+
+        // Helpers
+        function IsNullOrEmptyOrWhiteSpace(value) {
+            return (value == null || value === "" || !/\S/.test(value));
+        }
+
+        function prepareLogger() {
+            //First lets create a Logger for the SCORM communications
+            //Create the logger
+            if (typeof (Logger) == "undefined" || Logger == null) {
+                Logger = log4javascript.getLogger("SCORM_COMMUNICATIONS");
+                var loggerLayout = new log4javascript.PatternLayout("%d %-5p - %m%n");
+                var loggerAppender = new log4javascript.InPageAppender('myLogger', false, false, true, '100%', '100%');
+                loggerAppender.setLayout(loggerLayout);
+                Logger.addAppender(loggerAppender);
+            }
+        }
+
+        function createDiff(original, expected) {
+            if ((typeof original === 'string' || original instanceof String) && (typeof expected === 'string' || expected instanceof String)) {
+                return JsDiff['diffChars'](original, expected);
+            }
+            else {
+                var response = [];
+                response.push({ 'value': original });
+
+                if (original !== expected) {
+                    response.push({ 'nomatch': true, 'original': original, 'expected': expected });
+                }
+                return response
+            }
+
+
+        }
+
+        function hideAllInstructions() {
+            var div1 = $('#step1');
+            var div2 = $('#step2');
+            var div3 = $('#step3');
+            var divcompleted = $('#completed');
+
+            div1.hide();
+            div2.hide();
+            div3.hide();
+            divcompleted.hide();
+        }
+
+
+        function enableButtons() {
+            var btn1 = $('#btnStep1');
+            var div1 = $('#step1');
+
+            var btn2 = $('#btnStep2');
+            var div2 = $('#step2');
+
+            var btn3 = $('#btnStep3');
+            var div3 = $('#step3');
+
+            var divcompleted = $('#completed');
+
+            if (receivedcmi.core.lesson_status == "not attempted" && IsNullOrEmptyOrWhiteSpace(receivedcmi.suspend_data)) {
+                btn1.prop('disabled', false);
+                div1.show();
+                btn2.prop('disabled', true);
+                div2.hide();
+                btn3.prop('disabled', true);
+                div3.hide();
+
+                divcompleted.hide();
+
+                btn1.click(function () {
+                    step1();
+                });
+            }
+
+            if (receivedcmi.core.lesson_location == "step1") {
+                btn1.prop('disabled', true);
+                div1.hide();
+                btn2.prop('disabled', false);
+                div2.show();
+                btn3.prop('disabled', true);
+                div3.hide();
+
+                divcompleted.hide();
+
+                btn2.click(function () {
+                    step2();
+                });
+            }
+
+            if (receivedcmi.core.lesson_location == "step2") {
+                btn1.prop('disabled', true);
+                div1.hide();
+                btn2.prop('disabled', true);
+                div2.hide();
+                btn3.prop('disabled', false);
+                div3.show();
+
+                divcompleted.hide();
+
+                btn3.click(function () {
+                    step3();
+                });
+            }
+        }
+
+        function step1() {
+            LMSSetValue('cmi.core.lesson_status', 'incomplete');
+            LMSSetValue('cmi.core.session_time', '00:00:01');
+            LMSSetValue('cmi.core.lesson_location', 'step1');
+            LMSSetValue('cmi.suspend_data', '<root><station early="air">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</station></root>');
+            LMSCommit();
+            Finished = LMSFinish();
+
+            var btn1 = $('#btnStep1');
+            var div1 = $('#step1');
+            var divcompleted = $('#completed');
+
+            btn1.prop('disabled', true);
+            div1.hide();
+            divcompleted.show();
+        }
+
+        function step2() {
+            LMSSetValue('cmi.core.lesson_status', 'completed');
+            LMSSetValue('cmi.core.score.raw', 100);
+            LMSSetValue('cmi.core.session_time', '00:00:01');
+            LMSSetValue('cmi.core.lesson_location', 'step2');
+            LMSSetValue('cmi.suspend_data', '<root><station early="air">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</station></root>');
+            LMSCommit();
+            Finished = LMSFinish();
+
+            var btn2 = $('#btnStep2');
+            var div2 = $('#step2');
+            var divcompleted = $('#completed');
+
+            btn2.prop('disabled', true);
+            div2.hide();
+            divcompleted.show();
+        }
+
+        function step3() {
+            Finished = LMSFinish();
+
+            var btn3 = $('#btnStep3');
+            var div3 = $('#step3');
+            var divcompleted = $('#completed');
+
+            btn3.prop('disabled', true);
+            div3.hide();
+            divcompleted.show();
+        }
+
+        $(document).ready(function () {
+            prepareLogger();
+            hideAllInstructions();
+
+            // Detect SCORM RTE API
+            myAPI = getAPI();
+
+            if (myAPI == null) {
+                Logger.error("The LMS SCORM 1.2 RTE API was not discovered.");
+            } else {
+                Initialized = LMSInitialize();
+                if (Initialized) {
+                    // Try getting cmi.launch_data, this is to confirm that values are correctly loaded from IMSManifest.xml
+                    receivedcmi.launch_data = LMSGetValue("cmi.launch_data", true, expectedcmi_step1.launch_data);
+                    receivedcmi.core.student_id = LMSGetValue('cmi.core.student_id', true, null);
+                    receivedcmi.core.student_name = LMSGetValue('cmi.core.student_name', true, null);
+
+                    receivedcmi.core.lesson_location = LMSGetValue('cmi.core.lesson_location', false, null);
+                    receivedcmi.core.lesson_status = LMSGetValue('cmi.core.lesson_status', true, null);
+                    receivedcmi.suspend_data = LMSGetValue('cmi.suspend_data', false, null);
+                    receivedcmi.student_data.mastery_score = LMSGetValue('cmi.student_data.mastery_score', true, expectedcmi_step1.student_data.mastery_score);
+
+                    receivedcmi.core.total_time = LMSGetValue('cmi.core.total_time', true, null);
+                    receivedcmi.core.score.rae = LMSGetValue('cmi.core.score.raw', false, null);
+                    enableButtons();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+@page
+@model SCORM_Razor.Pages.UploadCourseModel
+@{
+    ViewData["Title"] = "UploadCourse";
+}
+
+<h1>UploadCourse</h1>
+<h2>Please upload SCORM Package Zip file</h2>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

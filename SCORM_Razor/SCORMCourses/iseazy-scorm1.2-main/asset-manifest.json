@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "@yield('content-viewer-url')/static/css/main.84105759.chunk.css",
+    "main.js": "@yield('content-viewer-url')/static/js/main.c1908d80.chunk.js",
+    "main.js.map": "@yield('content-viewer-url')/static/js/main.c1908d80.chunk.js.map",
+    "runtime-main.js": "@yield('content-viewer-url')/static/js/runtime-main.f00fc362.js",
+    "runtime-main.js.map": "@yield('content-viewer-url')/static/js/runtime-main.f00fc362.js.map",
+    "static/css/2.2466dd0e.chunk.css": "@yield('content-viewer-url')/static/css/2.2466dd0e.chunk.css",
+    "static/js/2.c4c0a1ab.chunk.js": "@yield('content-viewer-url')/static/js/2.c4c0a1ab.chunk.js",
+    "static/js/2.c4c0a1ab.chunk.js.map": "@yield('content-viewer-url')/static/js/2.c4c0a1ab.chunk.js.map",
+    "index.html": "@yield('content-viewer-url')/index.html",
+    "static/css/2.2466dd0e.chunk.css.map": "@yield('content-viewer-url')/static/css/2.2466dd0e.chunk.css.map",
+    "static/css/main.84105759.chunk.css.map": "@yield('content-viewer-url')/static/css/main.84105759.chunk.css.map",
+    "static/js/2.c4c0a1ab.chunk.js.LICENSE.txt": "@yield('content-viewer-url')/static/js/2.c4c0a1ab.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f00fc362.js",
+    "static/css/2.2466dd0e.chunk.css",
+    "static/js/2.c4c0a1ab.chunk.js",
+    "static/css/main.84105759.chunk.css",
+    "static/js/main.c1908d80.chunk.js"
+  ]
+}
